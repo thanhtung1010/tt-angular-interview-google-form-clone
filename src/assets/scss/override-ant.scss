@@ -1,0 +1,140 @@
+.tt-experiences-wrap_table_data {
+
+  .ant-collapse {
+    background: transparent;
+
+    .ant-collapse-item {
+
+      .ant-collapse-header {
+        display: none;
+      }
+    }
+  }
+}
+
+.am-table {
+
+  .ant-table-thead {
+    .ant-table-row {
+      th {
+        background: transparent;
+        border: unset;
+        color: #727272;
+        font-size: 40px;
+        font-weight: 600;
+
+        &::before {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .ant-table-tbody {
+    .ant-table-row {
+      background: transparent !important;
+      cursor: pointer;
+
+      .icon {
+        vertical-align: middle !important;
+      }
+
+      .ant-table-cell {
+        border-bottom: unset;
+        font-size: #{$laggerFontSize};
+        font-weight: 500;
+        padding-left: 32px;
+        vertical-align: baseline;
+
+        div {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          justify-content: flex-start;
+          align-items: flex-start;
+
+          .extra {
+            color: #727272;
+            font-size: 20px;
+          }
+        }
+      }
+
+      :hover {
+        border-radius: 20px;
+        box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.25);
+      }
+    }
+  }
+}
+
+.tt-not_found {
+
+  .ant-empty-image {
+    height: unset;
+  }
+
+  .ant-btn {
+    border-color: #{$purpleColor} !important;
+    color: #{$whiteColor} !important;
+    background-color: #{$purpleColor} !important;
+    opacity: .8;
+
+    &:hover {
+      border-color: #{$purpleColor} !important;
+    }
+  }
+}
+
+.tt-login_container {
+
+  .ant-input {
+    font-size: #{$mediumFontSize} !important;
+  }
+
+  .ant-input-affix-wrapper {
+    font-size: #{$mediumFontSize} !important;
+  }
+}
+
+.ant-input {
+  height: 40px;
+  border-radius: 20px !important;
+}
+
+.ant-input-affix-wrapper {
+  height: 50px;
+  border-radius: 25px !important;
+}
+
+.tt-theme-primary {
+
+  .ant-input:hover, .ant-input:focus, .ant-input-affix-wrapper:hover, .ant-input-affix-wrapper.focus , .ant-input-affix-wrapper-focused {
+    border-color: #{$purpleColor} !important;
+    box-shadow: unset !important;
+  }
+
+  .ant-btn {
+    height: 40px;
+    font-size: #{$mediumFontSize};
+  }
+
+  .ant-btn-primary {
+    background-color: #{$purpleColor};
+    border-color: #{$purpleColor};
+  }
+
+  .ant-btn-default {
+    color: #{$purpleColor};
+    border-color: #{$purpleColor};
+  }
+
+  .ant-btn-primary:hover, .ant-btn-primary:focus {
+    background-color: #{$purpleColor};
+    border-color: #{$purpleColor};
+  }
+
+  .ant-btn-primary:hover {
+    opacity: .8;
+  }
+}

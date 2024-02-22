@@ -1,0 +1,118 @@
+&-main {
+  z-index: 5;
+}
+
+&-link_btn {
+  height: fit-content;
+  width: fit-content;
+  cursor: pointer;
+}
+
+&-link_menu:hover {
+  color: #{$greenColor} !important;
+}
+
+&-white_bg {
+  background-color: #{$whiteColor} !important;
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.25);
+}
+
+&-mailto {
+  display: flex;
+  gap: 20px;
+  padding: 13px 28px;
+  border-radius: 25px;
+  border: 1px solid #{$greenColor};
+  color: #{$whiteColor};
+}
+
+&-hidden_scroll {
+  overflow: hidden !important;
+}
+
+&-empty_main {
+  margin-top: 100px !important;
+
+  .ant-empty-image {
+    display: flex;
+    height: 500px;
+
+    img {
+      margin: auto;
+    }
+  }
+
+  .ant-empty-description {
+    font-weight: bold;
+    opacity: .7;
+    font-size: #{$xLaggerFontSize};
+  }
+}
+
+&-unset_border {
+  border-right: unset;
+}
+
+&-unset_background {
+  background-image: unset;
+}
+
+&-display_block {
+  display: block;
+}
+
+&-not_found {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media only screen and (max-width: 1400px) {
+
+}
+
+@media only screen and (max-width: 1250px) {
+
+}
+
+@media only screen and (max-width: 950px) {
+
+  &-mailto {
+    gap: 15px;
+    padding: 10px 20px;
+    font-size: 14px;
+    align-items: center;
+    line-height: 14px;
+  }
+
+}
+
+@media only screen and (max-width: 750px) {
+
+}
+
+@media only screen and (max-width: 650px) {
+
+  &-mailto {
+    gap: 10px;
+    padding: 6px 14px;
+    font-size: 12px;
+    align-items: center;
+    line-height: 12px;
+  }
+
+}
+
+@media only screen and (max-width: 400px) {
+
+}
