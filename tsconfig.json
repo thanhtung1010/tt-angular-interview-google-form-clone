@@ -1,6 +1,6 @@
 /* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
-  "compileOnSave": false,
+  "compileOnSave": true,
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
@@ -30,8 +30,11 @@
       "@app/*": [
         "./src/app/*"
       ],
-      "@standalone-components/*": [
-        "./src/app/standalone-components/*"
+      "@function-components/*": [
+        "./src/app/function-components/*"
+      ],
+      "@shared-components/*": [
+        "./src/app/shared-components/*"
       ],
       "@services/*": [
         "./src/app/services/*"
