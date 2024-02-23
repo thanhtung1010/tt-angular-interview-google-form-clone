@@ -21,7 +21,7 @@
           <nz-form-item>
             <nz-form-control>
               <nz-select nzShowSearch nzPlaceHolder="Select question type" formControlName="questionType">
-                <ng-container *ngFor="let item of questionType">
+                <ng-container *ngFor="let item of questionTypes">
                   <nz-option [nzLabel]="item.label" [nzValue]="item.value"></nz-option>
                 </ng-container>
               </nz-select>
@@ -73,6 +73,6 @@
     </ng-container>
   </ng-container>
   <ng-container *nzModalFooter>
-    <button nz-button (click)="toogleAddNewQuestionModal(false)">{{'Submit'}}</button>
+    <button nz-button (click)="submitForm()">{{'Submit'}}</button>
   </ng-container>
 </nz-modal>

@@ -43,8 +43,10 @@ export class FormBuilderComponent implements OnInit {
     required: FormControl<boolean | null>;
     question: FormControl<string | null>;
     questionType: FormControl<QUESTION_TYPE | null>;
+    allowUserCustomAnswer?: FormControl<boolean | null>;
+    answerOption?: FormArray<FormControl<string | null>>;
   }>;
-  questionType = questionTypes;
+  questionTypes = questionTypes;
   isAddingCheckBox: boolean = false;
   visibleAddNewQuestionModal: boolean = false;
   defaultQuestionType: QUESTION_TYPE = 'PARAGRAPH';
@@ -52,6 +54,14 @@ export class FormBuilderComponent implements OnInit {
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
+    this.newQuestionForm?.valueChanges.subscribe(resp => {
+      console.log(resp);
+      if (resp['questionType'] && resp['questionType'] === 'CHECK_BOX') {
+        this.addCheckBoxControl();
+      } else {
+        this.removeCheckBoxControl();
+      }
+    });
   }
 
   toogleAddNewQuestionModal(visible: boolean) {
@@ -71,6 +81,21 @@ export class FormBuilderComponent implements OnInit {
       question: ['', [Validators.required]],
       questionType: [this.defaultQuestionType, [Validators.required]]
     });
+  }
+
+  addCheckBoxControl() {
+    this.newQuestionForm.addControl('allowUserCustomAnswer', new FormControl(false, []));
+    const formArray: FormArray<FormControl<string | null>> = this.fb.array([] as Array<FormControl<string | null>>);
+    this.newQuestionForm.addControl('answerOption', formArray);
+  }
+
+  removeCheckBoxControl() {
+    this.newQuestionForm.removeControl('allowUserCustomAnswer');
+    this.newQuestionForm.removeControl('answerOption');
+  }
+
+  submitForm() {
+    console.log(this.newQuestionForm.value)
   }
 
 }
