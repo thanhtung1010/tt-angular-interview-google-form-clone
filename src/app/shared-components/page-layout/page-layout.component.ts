@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { VersionService } from '@app/services';
 
 @Component({
   selector: 'tt-page-layout',
@@ -11,7 +10,7 @@ export class PageLayoutComponent implements OnInit {
   @Input() showContent: boolean = true;
   @Input() showFooter: boolean = true;
 
-  constructor(private versionService: VersionService) { }
+  constructor() { }
 
   ngOnInit() {
   }

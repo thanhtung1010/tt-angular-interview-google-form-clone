@@ -1,0 +1,78 @@
+
+<ng-container *ngIf="newQuestionForm">
+  <form nz-form [formGroup]="newQuestionForm">
+    <!-- region questionType -->
+    <ng-container *ngIf="newQuestionForm.contains('questionType')">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-select nzShowSearch nzPlaceHolder="Select question type" formControlName="questionType"
+            (ngModelChange)="onChangeQuestionType($event)">
+            <ng-container *ngFor="let item of questionTypes">
+              <nz-option [nzLabel]="item.label" [nzValue]="item.value"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </ng-container>
+
+    <!-- region question -->
+    <ng-container *ngIf="newQuestionForm.contains('question')">
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input formControlName="question" placeholder="Type question here" />
+        </nz-form-control>
+      </nz-form-item>
+    </ng-container>
+
+    <!-- region question type checkbox -->
+    <ng-container *ngIf="isAddingCheckBox">
+
+      <!-- region answer option -->
+      <ng-container *ngIf="newQuestionForm.contains('answerOption')">
+        <div formArrayName="answerOption">
+          <ng-container *ngFor="let item of newQuestionForm.controls['answerOption']?.controls; let controlIndex = index">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-input-group [nzAddOnAfter]="deleteAnswerOption">
+                  <input nz-input [formControlName]="controlIndex" placeholder="Add Answer Option" />
+                </nz-input-group>
+
+
+                <ng-template #deleteAnswerOption>
+                  <span class="tt-pointer" (click)="removeAnswerOption(controlIndex)" nz-icon nzType="delete" nzTheme="outline"></span>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </ng-container>
+        </div>
+      </ng-container>
+
+      <a class="tt-add_answer_option" (click)="addNewAnswerOption()" [ngClass]="{'tt-disabled': disable.addNewOption}">{{'+Add another answer'}}</a>
+
+      <!-- region question -->
+      <ng-container *ngIf="newQuestionForm.contains('allowUserCustomAnswer')">
+        <div class="tt-checkbox_validation">
+          <nz-form-item>
+            <nz-form-control>
+              <label nz-checkbox formControlName='allowUserCustomAnswer' [ngClass]="{'tt-disabled': disable.allowSpecify}"
+                (ngModelChange)="onChangeCustomAnswer()">
+                {{'Allow user to specify own answer'}}
+              </label>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <!-- region question -->
+    <ng-container *ngIf="newQuestionForm.contains('required')">
+      <div class="tt-checkbox_validation">
+        <nz-form-item>
+          <nz-form-control>
+            <label nz-checkbox formControlName='required'>{{'This question is required'}}</label>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </ng-container>
+  </form>
+</ng-container>

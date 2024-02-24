@@ -1,23 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { PageLayoutComponent } from '@app/shared-components';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, effect, inject, signal, untracked } from '@angular/core';
+import { IAnswer, ICheckboxGroup, IQuestion, IQuestionAndAnswer } from '@app/interfaces';
+import { AddQuestionComponent, PageLayoutComponent } from '@app/shared-components';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { Router } from '@angular/router';
+import { QNAService } from '@app/services/QNA.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import {
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { QUESTION_TYPE, questionTypes } from '@app/enums';
-import { IsRequiredDirective } from '@app/directives';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'tt-form-builder',
@@ -27,75 +21,111 @@ import { CommonModule } from '@angular/common';
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    IsRequiredDirective,
+
     PageLayoutComponent,
+    AddQuestionComponent,
 
     NzModalModule,
+    NzButtonModule,
     NzInputModule,
     NzSelectModule,
     NzFormModule,
     NzCheckboxModule,
-    NzButtonModule,
+    NzIconModule,
   ]
 })
 export class FormBuilderComponent implements OnInit {
-  newQuestionForm!: FormGroup<{
-    required: FormControl<boolean | null>;
-    question: FormControl<string | null>;
-    questionType: FormControl<QUESTION_TYPE | null>;
-    allowUserCustomAnswer?: FormControl<boolean | null>;
-    answerOption?: FormArray<FormControl<string | null>>;
-  }>;
-  questionTypes = questionTypes;
-  isAddingCheckBox: boolean = false;
-  visibleAddNewQuestionModal: boolean = false;
-  defaultQuestionType: QUESTION_TYPE = 'PARAGRAPH';
+  qnaService = inject(QNAService);
+  qnaList: IQuestionAndAnswer[] = this.qnaService.qnaList();
+  visibleAddNewQuestionModal$ = signal<boolean>(false);
 
-  constructor(private fb: FormBuilder) { }
+  submitNewQuestion: number = 0;
+  lengthOfQNAList: number = this.qnaList.length;
+  disableReviewAnswer: boolean = true;
 
-  ngOnInit() {
-    this.newQuestionForm?.valueChanges.subscribe(resp => {
-      console.log(resp);
-      if (resp['questionType'] && resp['questionType'] === 'CHECK_BOX') {
-        this.addCheckBoxControl();
-      } else {
-        this.removeCheckBoxControl();
-      }
+  constructor(
+    private router: Router,
+  ) {
+    effect(() => {
+      const qnaList = this.qnaService.qnaList();
+      this.qnaList = qnaList.map((elm, index) => {
+        let result = {...elm};
+
+        if (this.qnaList[index]) {
+          result = {...result, ...this.qnaList[index]}
+        }
+        return result;
+      });
+      this.lengthOfQNAList = this.qnaList.length;
+      this.checkValidAllQuestion();
     });
   }
+
+  ngOnInit() { }
 
   toogleAddNewQuestionModal(visible: boolean) {
-    if (visible) {
-      if (!this.newQuestionForm) {
-        this.initForm();
-      }
-    } else {
-      this.newQuestionForm.reset();
+    if (!visible) {
+      this.submitNewQuestion = 0;
     }
-    this.visibleAddNewQuestionModal = visible;
+    this.visibleAddNewQuestionModal$.set(visible);
   }
 
-  initForm() {
-    this.newQuestionForm = this.fb.group({
-      required: [false, []],
-      question: ['', [Validators.required]],
-      questionType: [this.defaultQuestionType, [Validators.required]]
-    });
+  addNewQuestion(newQuestion: IQuestion) {
+    this.qnaService.addNewQuestion(newQuestion);
+    this.toogleAddNewQuestionModal(false);
   }
 
-  addCheckBoxControl() {
-    this.newQuestionForm.addControl('allowUserCustomAnswer', new FormControl(false, []));
-    const formArray: FormArray<FormControl<string | null>> = this.fb.array([] as Array<FormControl<string | null>>);
-    this.newQuestionForm.addControl('answerOption', formArray);
+  onSubmitQuestion() {
+    this.submitNewQuestion = Date.now();
   }
 
-  removeCheckBoxControl() {
-    this.newQuestionForm.removeControl('allowUserCustomAnswer');
-    this.newQuestionForm.removeControl('answerOption');
+  onSubmitAnswer() {
+    this.qnaService.updateQNA(this.qnaList);
   }
 
-  submitForm() {
-    console.log(this.newQuestionForm.value)
+  onChangeAnswerTheQuestion(evt: IAnswer, index: number) {
+    this.qnaList[index].answer = evt.answer;
+    this.qnaList[index].customAnswer = evt.customAnswer;
+  }
+
+  onChangeCheckBoxAnswer(evt: ICheckboxGroup[], index: number) {
+    const checkedOtherOption = !!evt.find(elm => elm.value === 'Other' && elm.checked === true);
+    this.qnaList[index].showCustomAnswer = checkedOtherOption;
+    this.qnaList[index].valid = this.checkValidAnswer(this.qnaList[index]);
+    this.checkValidAllQuestion();
+  }
+
+  onChangeCheckCustomAnswer(evt: string, index: number) {
+    this.qnaList[index].valid = this.checkValidAnswer(this.qnaList[index]);
+    this.checkValidAllQuestion();
+  }
+
+  onChangeAnswer(evt: string, index: number) {
+    this.qnaList[index].valid = this.checkValidAnswer(this.qnaList[index]);
+    this.checkValidAllQuestion();
+  }
+
+  checkValidAnswer(item: IQuestionAndAnswer): boolean {
+    if (!item.required) return true;
+
+    if(item.questionType === 'PARAGRAPH'){
+      return !!item.answer;
+    } else {
+      if (item.showCustomAnswer) {
+        return !!item.customAnswer;
+      } else {
+        return (item.answerOption?.filter(elm => elm.checked).length ?? 0) > 0
+      }
+    }
+  }
+
+  checkValidAllQuestion() {
+    this.disableReviewAnswer = this.qnaList.some(elm => elm.required && !elm.valid);
+  }
+
+  goToReview() {
+    this.onSubmitAnswer();
+    this.router.navigate(['answers']);
   }
 
 }

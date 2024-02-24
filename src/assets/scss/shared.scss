@@ -47,12 +47,13 @@
 
 &-label {
   color: #{$mainTextColor};
-  margin-left: 10px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   display: block;
   text-align: left;
   justify-content: flex-start;
   align-items: flex-start;
+  font-size: #{$mediumFontSize};
+  font-weight: bold;
 }
 
 &-title {

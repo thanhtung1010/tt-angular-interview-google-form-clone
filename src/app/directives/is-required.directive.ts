@@ -1,13 +1,18 @@
 import { Directive, ElementRef, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormControl, ValidatorFn } from '@angular/forms';
+import { isString } from 'lodash';
 
 @Directive({
   selector: '[tt-required]',
   standalone: true,
 })
 export class IsRequiredDirective implements OnInit, OnChanges {
-  @Input() frmCtrl: FormControl | AbstractControl | null = null;
-  @Input() validators: ValidatorFn | null | undefined = null;
+  @Input({
+    required: true,
+  }) frmCtrl!: FormControl | AbstractControl | undefined;
+  @Input({
+    required: true
+  }) validationField: string | string[] = '';
 
   constructor(private ele: ElementRef) {}
 
@@ -15,7 +20,7 @@ export class IsRequiredDirective implements OnInit, OnChanges {
     this.checkTheRequired()
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes['frmCtrl'] || changes['validators']){
+    if(changes['frmCtrl']){
       this.checkTheRequired()
     }
   }
@@ -24,8 +29,12 @@ export class IsRequiredDirective implements OnInit, OnChanges {
     let _required = false;
     if (this.frmCtrl && this.frmCtrl.validator) {
       const _validator = this.frmCtrl.validator({} as AbstractControl);
-      if (_validator && _validator['required']) {
-        _required = true;
+      if (_validator) {
+        if (isString(this.validationField)) {
+          _required = !!_validator[this.validationField];
+        } else {
+          _required = this.validationField.some(field => !!_validator[field]);
+        }
       }
     }
     this.setRequired(_required)

@@ -1,31 +1,20 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { AppLoadingService, VersionService } from './services';
-import { BrowserModule } from '@angular/platform-browser';
+import { AppLoadingService } from './services';
 
 @Component({
   selector: 'tt-root',
   standalone: true,
-  imports: [
-    RouterOutlet,
-  ],
-  providers: [
-    AppLoadingService,
-    VersionService,
-  ],
-  templateUrl: './app.component.html'
+  imports: [RouterOutlet],
+  providers: [AppLoadingService],
+  templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'google-form-clone';
 
-  constructor(
-    private appLoadingService: AppLoadingService,
-    private versionService: VersionService,
-  ) {}
+  constructor(private appLoadingService: AppLoadingService) {}
 
-  ngOnInit(): void {
-    this.versionService.init();
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
     const timeout = setTimeout(() => {

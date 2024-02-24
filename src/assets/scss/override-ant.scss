@@ -1,17 +1,13 @@
-.tt-not_found {
+.tt-checkbox_validation .ant-form-item {
+  margin: unset;
+}
 
-  .ant-empty-image {
-    height: unset;
-  }
+.tt-checkbox_group_validation .ant-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 
-  .ant-btn {
-    border-color: #{$purpleColor} !important;
-    color: #{$whiteColor} !important;
-    background-color: #{$purpleColor} !important;
-    opacity: .8;
-
-    &:hover {
-      border-color: #{$purpleColor} !important;
-    }
+  label {
+    margin-right: unset;
   }
 }

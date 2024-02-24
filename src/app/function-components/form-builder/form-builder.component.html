@@ -3,76 +3,55 @@
     <section class="tt-builder">
       <h1 class="tt-page_title">{{'Form Builder'}}</h1>
       <main class="tt-page_content">
+        <ng-container *ngFor="let item of qnaList; let index = index">
+            <ng-container [ngSwitch]="item.questionType">
+              <ng-container *ngSwitchCase="'CHECKBOX'">
+                <div class="tt-type_answer tt-checkbox_group_validation">
+                  <label class="tt-label" tt-required [ngClass]="{'tt-required': item.required}">
+                    {{item.question}}
+                  </label>
+                  <nz-checkbox-group [(ngModel)]="item.answerOption" (ngModelChange)="onChangeCheckBoxAnswer($event, index)"></nz-checkbox-group>
+                </div>
+                <ng-container *ngIf="item.showCustomAnswer">
+                  <div class="tt-type_answer">
+                    <label class="tt-label tt-required">
+                      {{item.question}}
+                    </label>
+                    <textarea rows="2" [(ngModel)]="item.customAnswer" nz-input (ngModelChange)="onChangeCheckCustomAnswer($event, index)"></textarea>
+                  </div>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngSwitchDefault>
+                <div class="tt-type_answer">
+                  <label class="tt-label" [ngClass]="{'tt-required': item.required}">
+                    {{item.question}}
+                  </label>
+                  <textarea rows="2" [(ngModel)]="item.answer" nz-input (ngModelChange)="onChangeAnswer($event, index)"></textarea>
+                </div>
+              </ng-container>
+            </ng-container>
+        </ng-container>
         <a class="tt-new_question" (click)="toogleAddNewQuestionModal(true)">{{'Add new Question'}}</a>
       </main>
+      <ng-container *ngIf="lengthOfQNAList">
+        <footer class="tt-page_footer">
+          <button nz-button [disabled]="disableReviewAnswer" (click)="goToReview()">{{'Review my answers >'}}</button>
+        </footer>
+      </ng-container>
     </section>
   </ng-container>
 </tt-page-layout>
 
-<nz-modal [(nzVisible)]="visibleAddNewQuestionModal">
+<nz-modal [nzVisible]="visibleAddNewQuestionModal$()">
   <ng-container *nzModalTitle>
     {{'Add a New Question'}}
   </ng-container>
   <ng-container *nzModalContent>
-    <ng-container *ngIf="newQuestionForm">
-      <form nz-form [formGroup]="newQuestionForm">
-        <!-- region questionType -->
-        <ng-container *ngIf="newQuestionForm.contains('questionType')">
-          <nz-form-item>
-            <nz-form-control>
-              <nz-select nzShowSearch nzPlaceHolder="Select question type" formControlName="questionType">
-                <ng-container *ngFor="let item of questionTypes">
-                  <nz-option [nzLabel]="item.label" [nzValue]="item.value"></nz-option>
-                </ng-container>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-        </ng-container>
-
-        <!-- region question -->
-        <ng-container *ngIf="newQuestionForm.contains('question')">
-          <nz-form-item>
-            <nz-form-control nzErrorTip="Please input your question!">
-              <input nz-input formControlName="question" placeholder="Type question here" />
-            </nz-form-control>
-          </nz-form-item>
-        </ng-container>
-
-        <!-- region question type checkbox -->
-        <ng-container *ngIf="isAddingCheckBox">
-          <a>{{'+Add another answer'}}</a>
-
-          <!-- region answer option -->
-          <ng-container *ngIf="newQuestionForm.contains('question')">
-            <nz-form-item>
-              <nz-form-control>
-                <input nz-input formControlName="answerOption" placeholder="Add Answer Option" />
-              </nz-form-control>
-            </nz-form-item>
-          </ng-container>
-
-          <!-- region question -->
-          <ng-container *ngIf="newQuestionForm.contains('allowUserCustomAnswer')">
-            <nz-form-item>
-              <nz-form-control>
-                <label nz-checkbox formControlName='allowUserCustomAnswer'>{{'Allow user tp specify own answer'}}</label>
-              </nz-form-control>
-            </nz-form-item>
-          </ng-container>
-        </ng-container>
-
-        <!-- region question -->
-        <ng-container *ngIf="newQuestionForm.contains('required')">
-          <nz-form-item>
-            <nz-form-control>
-              <label nz-checkbox formControlName='required'>{{'This question is required'}}</label>
-            </nz-form-control>
-          </nz-form-item>
-        </ng-container>
-      </form>
-    </ng-container>
+    <tt-add-question [submit]="submitNewQuestion" (emitNewQuestion)="addNewQuestion($event)"></tt-add-question>
   </ng-container>
   <ng-container *nzModalFooter>
-    <button nz-button (click)="submitForm()">{{'Submit'}}</button>
+    <button nz-button (click)="toogleAddNewQuestionModal(false)" nzDanger>{{'Cancel'}}</button>
+    <button nz-button (click)="onSubmitQuestion()" [nzType]="'primary'">{{'Submit'}}</button>
   </ng-container>
 </nz-modal>

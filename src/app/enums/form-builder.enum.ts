@@ -1,4 +1,4 @@
-export type QUESTION_TYPE = 'CHECK_BOX' | 'PARAGRAPH';
+export type QUESTION_TYPE = 'CHECKBOX' | 'PARAGRAPH';
 
 export const questionTypes: {
   label: string;
@@ -6,7 +6,7 @@ export const questionTypes: {
 }[] = [
   {
     label: 'Checkbox List',
-    value: 'CHECK_BOX'
+    value: 'CHECKBOX'
   },
   {
     label: 'Paragraph',

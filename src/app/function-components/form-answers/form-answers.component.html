@@ -1,3 +1,41 @@
-<p>
-  form-answers works!
-</p>
+<tt-page-layout>
+  <ng-container content>
+    <section class="tt-builder">
+      <h1 class="tt-page_title">{{'Form Answers'}}</h1>
+      <main class="tt-page_content">
+        <ng-container *ngFor="let item of qnaList; let index = index">
+          <ng-container [ngSwitch]="item.questionType">
+            <ng-container *ngSwitchCase="'CHECKBOX'">
+              <div class="tt-type_answer tt-checkbox_group_validation">
+                <label class="tt-label">
+                  {{item.question}}
+                </label>
+                <ng-container *ngFor="let option of item.answerOption">
+                  <ng-container *ngIf="option.value === 'Other';else defaltOption">
+                    <p>{{option.value}} - {{item.customAnswer}}</p>
+                  </ng-container>
+
+                  <ng-template #defaltOption>
+                    <p>{{option.value}}</p>
+                  </ng-template>
+                </ng-container>
+              </div>
+            </ng-container>
+
+            <ng-container *ngSwitchDefault>
+              <div class="tt-type_answer">
+                <label class="tt-label">
+                  {{item.question}}
+                </label>
+                <p>{{item.answer}}</p>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </main>
+      <footer class="tt-page_footer">
+        <button nz-button (click)="backToBuilder()">{{'< Back to Form Builder'}}</button>
+      </footer>
+    </section>
+  </ng-container>
+</tt-page-layout>
